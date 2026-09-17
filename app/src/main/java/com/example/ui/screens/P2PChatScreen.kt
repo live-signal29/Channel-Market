@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,8 +12,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,6 +40,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -56,6 +60,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -63,13 +68,13 @@ import com.example.data.ChatMessageEntity
 import com.example.data.DealChatEntity
 import com.example.ui.MarketViewModel
 import com.example.ui.theme.DangerRed
-import com.example.ui.theme.DarkBg
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkSurface
-import com.example.ui.theme.DarkSurfaceVariant
-import com.example.ui.theme.DarkTextMuted
-import com.example.ui.theme.DarkTextPrimary
-import com.example.ui.theme.DarkTextSecondary
+import com.example.ui.theme.LightBg
+import com.example.ui.theme.LightBorder
+import com.example.ui.theme.LightSurface
+import com.example.ui.theme.LightSurfaceVariant
+import com.example.ui.theme.LightTextMuted
+import com.example.ui.theme.LightTextPrimary
+import com.example.ui.theme.LightTextSecondary
 import com.example.ui.theme.MarketPrimary
 import com.example.ui.theme.PriceGreen
 import com.example.ui.theme.TelegramCyan
@@ -109,84 +114,77 @@ fun P2PChatScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = DarkBg,
+        containerColor = LightBg,
         topBar = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(DarkSurface)
-                    .border(1.dp, DarkBorder)
+                    .background(LightSurface)
+                    .statusBarsPadding()
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .height(56.dp)
+                        .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = onBack, modifier = Modifier.testTag("p2p_chat_back_btn")) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back",
-                                tint = Color.White
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(4.dp))
-
-                        Column {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = dealChat?.listingTitle ?: "P2P Escrow Deal",
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = Color.White
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(6.dp))
-                                        .background(MarketPrimary.copy(alpha = 0.2f))
-                                        .padding(horizontal = 6.dp, vertical = 2.dp)
-                                ) {
-                                    Text(
-                                        text = "${dealChat?.price ?: 0.0} ${dealChat?.currency ?: "USDT"}",
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = PriceGreen
-                                    )
-                                }
-                            }
-
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = "Owner: ${dealChat?.sellerName ?: "@seller"}",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = TelegramCyan
-                                )
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text(
-                                    text = "• Private Chat",
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Normal,
-                                    color = DarkTextMuted
-                                )
-                            }
-                        }
+                    IconButton(
+                        onClick = onBack,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .testTag("p2p_chat_back_btn")
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = LightTextPrimary
+                        )
                     }
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = dealChat?.listingTitle ?: "Chat",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = LightTextPrimary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Spacer(modifier = Modifier.height(1.dp))
+                        Text(
+                            text = "Owner: ${dealChat?.sellerName ?: "@seller"}",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = TelegramCyan,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
 
                     // Role switch indicator
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(8.dp))
                             .background(
                                 when (currentRole) {
-                                    "ADMIN" -> TonGold.copy(alpha = 0.2f)
-                                    "SELLER" -> TelegramCyan.copy(alpha = 0.2f)
-                                    else -> WhatsAppGreen.copy(alpha = 0.2f)
+                                    "ADMIN" -> TonGold.copy(alpha = 0.15f)
+                                    "SELLER" -> TelegramCyan.copy(alpha = 0.15f)
+                                    else -> WhatsAppGreen.copy(alpha = 0.15f)
                                 }
+                            )
+                            .border(
+                                1.dp,
+                                when (currentRole) {
+                                    "ADMIN" -> TonGold.copy(alpha = 0.4f)
+                                    "SELLER" -> TelegramCyan.copy(alpha = 0.4f)
+                                    else -> WhatsAppGreen.copy(alpha = 0.4f)
+                                },
+                                RoundedCornerShape(8.dp)
                             )
                             .clickable {
                                 currentRole = when (currentRole) {
@@ -195,10 +193,10 @@ fun P2PChatScreen(
                                     else -> "BUYER"
                                 }
                             }
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .padding(horizontal = 10.dp, vertical = 5.dp)
                     ) {
                         Text(
-                            text = "Chat as: $currentRole",
+                            text = currentRole,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = when (currentRole) {
@@ -210,36 +208,15 @@ fun P2PChatScreen(
                     }
                 }
 
-                // Private Chat Notice Banner
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFF161E2E))
-                        .padding(horizontal = 16.dp, vertical = 6.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Chat,
-                            contentDescription = null,
-                            tint = TelegramCyan,
-                            modifier = Modifier.size(13.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = "Discuss channel transfer, stats & price directly with the owner before buying.",
-                            fontSize = 11.sp,
-                            color = Color(0xFFBAE6FD),
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
+                HorizontalDivider(thickness = 0.8.dp, color = LightBorder)
             }
         },
         bottomBar = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(DarkSurface)
+                    .background(LightSurface)
+                    .navigationBarsPadding()
                     .padding(8.dp)
             ) {
                 // Admin Actions Bar (when Admin is in chat)
@@ -248,8 +225,9 @@ fun P2PChatScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 6.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFF191F2D)),
-                        shape = RoundedCornerShape(10.dp)
+                        colors = CardDefaults.cardColors(containerColor = LightSurfaceVariant),
+                        shape = RoundedCornerShape(10.dp),
+                        border = BorderStroke(1.dp, LightBorder)
                     ) {
                         Row(
                             modifier = Modifier
@@ -267,7 +245,7 @@ fun P2PChatScreen(
                             ) {
                                 Icon(Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("Approve Deal", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                Text("Approve Deal", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
                             }
 
                             Button(
@@ -280,9 +258,9 @@ fun P2PChatScreen(
                                 shape = RoundedCornerShape(8.dp),
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Icon(Icons.Default.Star, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.Black)
+                                Icon(Icons.Default.Star, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color.White)
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("Release Escrow", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                                Text("Release Escrow", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
                             }
                         }
                     }
@@ -303,7 +281,7 @@ fun P2PChatScreen(
                             Text(
                                 text = "Message as $currentRole...",
                                 fontSize = 13.sp,
-                                color = DarkTextMuted
+                                color = LightTextMuted
                             )
                         },
                         singleLine = false,
@@ -322,12 +300,12 @@ fun P2PChatScreen(
                         }),
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = DarkTextPrimary,
-                            unfocusedTextColor = DarkTextPrimary,
-                            focusedContainerColor = DarkSurfaceVariant,
-                            unfocusedContainerColor = DarkSurfaceVariant,
+                            focusedTextColor = LightTextPrimary,
+                            unfocusedTextColor = LightTextPrimary,
+                            focusedContainerColor = LightSurfaceVariant,
+                            unfocusedContainerColor = LightSurfaceVariant,
                             focusedBorderColor = MarketPrimary,
-                            unfocusedBorderColor = DarkBorder
+                            unfocusedBorderColor = LightBorder
                         )
                     )
 
@@ -373,10 +351,11 @@ fun P2PChatScreen(
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = DarkSurface),
-                    shape = RoundedCornerShape(12.dp)
+                    colors = CardDefaults.cardColors(containerColor = LightSurface),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, LightBorder)
                 ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
+                    Column(modifier = Modifier.padding(14.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -392,7 +371,7 @@ fun P2PChatScreen(
                             Text(
                                 text = "Order #ORD-${dealChatId}",
                                 fontSize = 11.sp,
-                                color = DarkTextMuted
+                                color = LightTextMuted
                             )
                         }
 
@@ -402,7 +381,7 @@ fun P2PChatScreen(
                             text = dealChat?.listingTitle ?: "",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = DarkTextPrimary
+                            color = LightTextPrimary
                         )
 
                         Text(
@@ -456,21 +435,22 @@ fun ChatMessageItem(message: ChatMessageEntity) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))
-                    .background(Color(0xFF1D1B13))
-                    .border(1.dp, TonGold.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+                    .background(Color(0xFFFEF9C3))
+                    .border(1.dp, Color(0xFFFDE047), RoundedCornerShape(10.dp))
                     .padding(horizontal = 12.dp, vertical = 8.dp)
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = message.text,
                         fontSize = 11.sp,
-                        color = Color(0xFFFDE68A),
-                        lineHeight = 16.sp
+                        color = Color(0xFF854D0E),
+                        lineHeight = 16.sp,
+                        fontWeight = FontWeight.Medium
                     )
                     Text(
                         text = timeString,
                         fontSize = 9.sp,
-                        color = DarkTextMuted,
+                        color = Color(0xFFA16207),
                         modifier = Modifier.align(Alignment.End)
                     )
                 }
@@ -479,14 +459,14 @@ fun ChatMessageItem(message: ChatMessageEntity) {
     } else {
         val alignment = if (isBuyer) Alignment.End else Alignment.Start
         val bubbleColor = when {
-            isAdmin -> Color(0xFF281C3D) // Admin Royal Purple
-            isBuyer -> Color(0xFF0F3047) // Buyer Telegram Dark Cyan
-            else -> Color(0xFF162A21) // Seller Green Tint
+            isAdmin -> Color(0xFFF5F3FF) // Soft Lavender Purple
+            isBuyer -> Color(0xFFE0F2FE) // Telegram Sky Blue Tint
+            else -> Color(0xFFFFFFFF)    // Crisp White Seller Bubble
         }
         val borderColor = when {
-            isAdmin -> TonGold
-            isBuyer -> MarketPrimary
-            else -> WhatsAppGreen
+            isAdmin -> Color(0xFFDDD6FE)
+            isBuyer -> Color(0xFFBAE6FD)
+            else -> LightBorder
         }
 
         Column(
@@ -498,7 +478,7 @@ fun ChatMessageItem(message: ChatMessageEntity) {
                     .widthIn(max = 300.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(bubbleColor)
-                    .border(1.dp, borderColor.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                    .border(1.dp, borderColor, RoundedCornerShape(12.dp))
                     .padding(10.dp)
             ) {
                 Column {
@@ -512,15 +492,16 @@ fun ChatMessageItem(message: ChatMessageEntity) {
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = when {
-                                isAdmin -> TonGold
-                                isBuyer -> TelegramCyan
+                                isAdmin -> Color(0xFF6D28D9)
+                                isBuyer -> Color(0xFF0369A1)
                                 else -> WhatsAppGreen
                             }
                         )
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = timeString,
                             fontSize = 9.sp,
-                            color = DarkTextMuted
+                            color = LightTextMuted
                         )
                     }
 
@@ -529,7 +510,7 @@ fun ChatMessageItem(message: ChatMessageEntity) {
                     Text(
                         text = message.text,
                         fontSize = 13.sp,
-                        color = DarkTextPrimary,
+                        color = LightTextPrimary,
                         lineHeight = 18.sp
                     )
                 }
