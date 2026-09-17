@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.example.data.ListingEntity
 import com.example.model.ItemCategory
 import com.example.model.Platform
+import com.example.model.TonAdsStatus
 import com.example.ui.theme.FeaturedPink
 import com.example.ui.theme.LightBorder
 import com.example.ui.theme.LightSurface
@@ -88,36 +89,29 @@ fun ListingCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(12.dp)) {
             // 1. Top row: Platform icon, Title & Handle, Favorite bookmark
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                PlatformIconBadge(platform = platform, size = 42.dp)
+                PlatformIconBadge(platform = platform, size = 40.dp)
 
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = listing.title,
-                            fontSize = 15.sp,
-                            color = LightTextPrimary,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
+                    Text(
+                        text = listing.title,
+                        fontSize = 15.sp,
+                        color = LightTextPrimary,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
 
                     Spacer(modifier = Modifier.height(2.dp))
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = listing.handleOrLink,
                             fontSize = 12.sp,
@@ -150,7 +144,7 @@ fun ListingCard(
                 IconButton(
                     onClick = onToggleFavorite,
                     modifier = Modifier
-                        .size(34.dp)
+                        .size(32.dp)
                         .testTag("favorite_btn_${listing.id}")
                 ) {
                     Icon(
@@ -162,9 +156,9 @@ fun ListingCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
-            // 2. Badges FlowRow
+            // 2. Badges FlowRow (Clean and relevant tags)
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -177,9 +171,7 @@ fun ListingCard(
                     borderColor = LightBorder
                 )
 
-                PrivacyBadge(privacy = privacy)
-
-                if (platform == Platform.TELEGRAM && category != ItemCategory.USER_ACCOUNT) {
+                if (platform == Platform.TELEGRAM && category != ItemCategory.USER_ACCOUNT && tonAds != TonAdsStatus.NONE) {
                     TonAdsBadge(status = tonAds)
                 }
 
@@ -198,7 +190,7 @@ fun ListingCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             // 3. Metrics row: Members count + Monthly Revenue
             Row(
@@ -210,7 +202,7 @@ fun ListingCard(
                         imageVector = Icons.Default.People,
                         contentDescription = "Members",
                         tint = LightTextMuted,
-                        modifier = Modifier.size(15.dp)
+                        modifier = Modifier.size(14.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
@@ -248,48 +240,43 @@ fun ListingCard(
             }
 
             HorizontalDivider(
-                modifier = Modifier.padding(vertical = 9.dp),
+                modifier = Modifier.padding(vertical = 7.dp),
                 thickness = 0.8.dp,
                 color = LightBorder.copy(alpha = 0.7f)
             )
 
             // 4. Dedicated Bottom Action Row: Clear Price (Left) + Buy Button (Right)
+            // Price is locked to horizontal layout and will NEVER wrap character-by-character
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Price (Guaranteed single line, never wrapped vertically)
-                Column {
+                // Price: Horizontal, high contrast, clean
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f, fill = false)
+                ) {
                     Text(
-                        text = "Price",
-                        fontSize = 10.sp,
-                        color = LightTextMuted,
-                        fontWeight = FontWeight.Medium
+                        text = "$${NumberFormat.getNumberInstance(Locale.US).format(listing.price.toInt())}",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Black,
+                        color = PriceGreen,
+                        maxLines = 1,
+                        softWrap = false
                     )
-                    Row(
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        Text(
-                            text = "$${NumberFormat.getNumberInstance(Locale.US).format(listing.price.toInt())}",
-                            fontSize = 19.sp,
-                            fontWeight = FontWeight.Black,
-                            color = PriceGreen,
-                            maxLines = 1,
-                            softWrap = false
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = listing.currency.ifBlank { "USDT" },
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = LightTextMuted,
-                            modifier = Modifier.padding(bottom = 2.dp),
-                            maxLines = 1,
-                            softWrap = false
-                        )
-                    }
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = listing.currency.ifBlank { "USDT" },
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = LightTextMuted,
+                        maxLines = 1,
+                        softWrap = false
+                    )
                 }
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 // Buy Now Action Button
                 Button(
@@ -298,14 +285,16 @@ fun ListingCard(
                         containerColor = if (listing.isSold) Color(0xFF64748B) else TelegramCyan
                     ),
                     shape = RoundedCornerShape(10.dp),
-                    contentPadding = PaddingValues(horizontal = 18.dp, vertical = 0.dp),
-                    modifier = Modifier.height(35.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp),
+                    modifier = Modifier.height(34.dp)
                 ) {
                     Text(
                         text = if (listing.isSold) "Sold Out" else "Buy Now",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if (listing.isSold) Color.White else Color.Black
+                        color = if (listing.isSold) Color.White else Color.Black,
+                        maxLines = 1,
+                        softWrap = false
                     )
                 }
             }

@@ -10,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.ui.MainScreen
 import com.example.ui.MarketViewModel
-import com.example.ui.theme.DarkBg
+import com.example.ui.theme.LightBg
 import com.example.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
             MyApplicationTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = DarkBg
+                    color = LightBg
                 ) {
                     MainScreen(viewModel = viewModel)
                 }

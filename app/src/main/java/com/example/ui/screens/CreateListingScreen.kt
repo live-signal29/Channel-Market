@@ -105,13 +105,7 @@ fun CreateListingScreen(
         } else if (handleOrLink.isBlank()) {
             errorMessage = "Please enter @handle or invite link"
         } else if (price <= 0) {
-            errorMessage = "Please enter a valid price"
-        } else if (selectedCategory == ItemCategory.USER_ACCOUNT && price > 100.0) {
-            errorMessage = "Account price cannot exceed $100 (Max $100 allowed)"
-        } else if (selectedCategory == ItemCategory.CHANNEL && price < 30.0) {
-            errorMessage = "Channel minimum price is $30"
-        } else if (selectedCategory == ItemCategory.CHANNEL && price > 2000.0) {
-            errorMessage = "Channel maximum price is $2000"
+            errorMessage = "Please enter a valid price greater than $0"
         } else if (sellerTelegram.isBlank() && sellerWhatsApp.isBlank()) {
             errorMessage = "Please enter either your Telegram or WhatsApp contact"
         } else {
@@ -128,7 +122,7 @@ fun CreateListingScreen(
                 membersCount = members,
                 price = price,
                 currency = currency,
-                description = description.ifBlank { "Channel/Group available for safe acquisition. Clean audience, ownership transfer guaranteed." },
+                description = description.ifBlank { "Asset available for verified ownership acquisition via official Escrow. Genuine audience and clean history." },
                 niche = niche,
                 monthlyIncome = monthlyIncome.ifBlank { "$0" },
                 sellerTelegram = sellerTelegram.ifBlank { "@Seller" },
@@ -233,12 +227,16 @@ fun CreateListingScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                val availableCategories = if (selectedPlatform == Platform.TELEGRAM) {
-                    listOf(ItemCategory.CHANNEL, ItemCategory.GROUP, ItemCategory.BOT, ItemCategory.USER_ACCOUNT)
-                } else if (selectedPlatform == Platform.WHATSAPP) {
-                    listOf(ItemCategory.CHANNEL, ItemCategory.GROUP, ItemCategory.USER_ACCOUNT)
-                } else {
-                    listOf(ItemCategory.PAGE, ItemCategory.CHANNEL, ItemCategory.GROUP, ItemCategory.USER_ACCOUNT, ItemCategory.SERVER)
+                val availableCategories = when (selectedPlatform) {
+                    Platform.TELEGRAM -> listOf(ItemCategory.CHANNEL, ItemCategory.GROUP, ItemCategory.BOT, ItemCategory.USER_ACCOUNT)
+                    Platform.WHATSAPP -> listOf(ItemCategory.CHANNEL, ItemCategory.GROUP, ItemCategory.USER_ACCOUNT)
+                    Platform.TIKTOK -> listOf(ItemCategory.USER_ACCOUNT)
+                    Platform.INSTAGRAM -> listOf(ItemCategory.USER_ACCOUNT, ItemCategory.PAGE)
+                    Platform.FACEBOOK -> listOf(ItemCategory.PAGE, ItemCategory.GROUP)
+                    Platform.YOUTUBE -> listOf(ItemCategory.CHANNEL)
+                    Platform.X_TWITTER -> listOf(ItemCategory.USER_ACCOUNT)
+                    Platform.DISCORD -> listOf(ItemCategory.SERVER, ItemCategory.BOT)
+                    Platform.OTHER -> listOf(ItemCategory.CHANNEL, ItemCategory.GROUP, ItemCategory.USER_ACCOUNT, ItemCategory.PAGE, ItemCategory.SERVER, ItemCategory.BOT)
                 }
 
                 availableCategories.forEach { cat ->
@@ -482,22 +480,11 @@ fun CreateListingScreen(
                     shape = RoundedCornerShape(10.dp)
                 )
 
-                val pricePlaceholder = when (selectedCategory) {
-                    ItemCategory.USER_ACCOUNT -> "Max $100"
-                    ItemCategory.CHANNEL -> "$30 - $2000"
-                    else -> "e.g. 75"
-                }
-                val priceLabel = when (selectedCategory) {
-                    ItemCategory.USER_ACCOUNT -> "Price (Max 100$)"
-                    ItemCategory.CHANNEL -> "Price (30$ - 2000$)"
-                    else -> "Price ($currency)"
-                }
-
                 OutlinedTextField(
                     value = priceText,
                     onValueChange = { priceText = it },
-                    label = { Text(priceLabel) },
-                    placeholder = { Text(pricePlaceholder) },
+                    label = { Text("Price ($currency)") },
+                    placeholder = { Text("e.g. 150") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = Modifier
                         .weight(1f)

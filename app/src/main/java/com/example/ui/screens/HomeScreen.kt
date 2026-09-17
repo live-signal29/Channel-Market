@@ -134,12 +134,12 @@ fun HomeScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Sell Channel",
+                        contentDescription = "Sell",
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "Sell Channel",
+                        text = "+ Sell",
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )
@@ -151,7 +151,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            contentPadding = PaddingValues(bottom = 88.dp)
+            contentPadding = PaddingValues(bottom = 120.dp)
         ) {
             // =========================================================================
             // 1. TOP APP BAR (Logo, Channel Market, "Buy Sell" Pill, Escrow & Admin)
@@ -161,19 +161,18 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(LightSurface)
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        // Official Telegram Buying & Selling 3D App Icon Badge
                         Image(
                             painter = painterResource(id = R.drawable.img_tg_buysell_icon_1789609172981),
-                            contentDescription = "Telegram Channel Market Logo",
+                            contentDescription = "Marketplace Logo",
                             modifier = Modifier
-                                .size(42.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .border(1.dp, LightBorder, RoundedCornerShape(12.dp))
+                                .size(38.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .border(1.dp, LightBorder, RoundedCornerShape(10.dp))
                                 .clickable {
                                     val now = System.currentTimeMillis()
                                     if (now - lastLogoTapTime > 4000L) {
@@ -201,10 +200,7 @@ fun HomeScreen(
                                     color = LightTextPrimary
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
-                                // Clear Buy (Green) and Sell (Red) without background for maximum clarity
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
                                         text = "Buy",
                                         fontSize = 15.sp,
@@ -300,35 +296,14 @@ fun HomeScreen(
             }
 
             // =========================================================================
-            // 2. TRUST BADGES ROW (From mockup header)
-            // =========================================================================
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(LightSurface)
-                        .horizontalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp, vertical = 6.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TrustBadgeItem(icon = Icons.Default.VerifiedUser, text = "Verified Sellers")
-                    TrustBadgeItem(icon = Icons.Default.Security, text = "100% Escrow Protection")
-                    TrustBadgeItem(icon = Icons.Default.Speed, text = "Fast Transfer")
-                    TrustBadgeItem(icon = Icons.Default.HeadsetMic, text = "24/7 Support")
-                    TrustBadgeItem(icon = Icons.Default.Public, text = "Global Deals")
-                }
-            }
-
-            // =========================================================================
-            // 3. SEARCH BAR
+            // 2. SEARCH BAR (Compact and fast)
             // =========================================================================
             item {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(LightSurface)
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
                 ) {
                     OutlinedTextField(
                         value = filter.searchQuery,
@@ -379,88 +354,18 @@ fun HomeScreen(
             }
 
             // =========================================================================
-            // 4. HERO BANNER (Generated 16:9 Artwork with rich CTA)
-            // =========================================================================
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .shadow(elevation = 2.dp, shape = RoundedCornerShape(16.dp))
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.img_market_hero_banner_1789606278949),
-                        contentDescription = "Marketplace Hero",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(135.dp),
-                        contentScale = ContentScale.Crop
-                    )
-
-                    // Soft gradient overlay
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(135.dp)
-                            .background(
-                                Brush.verticalGradient(
-                                    listOf(Color.Transparent, Color(0xCC090E17), Color(0xFA090E17))
-                                )
-                            )
-                    )
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(14.dp)
-                            .align(Alignment.BottomStart)
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = null,
-                                tint = TonGold,
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "OFFICIAL ESCROW GUARANTEED",
-                                color = TonGold,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Black,
-                                letterSpacing = 1.sp
-                            )
-                        }
-                        Text(
-                            text = "Buy • Sell • Trade Social Media Assets",
-                            color = Color.White,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                        Text(
-                            text = "Verified Telegram Channels, Groups & Bots with Safe Transfer",
-                            color = Color(0xFFCBD5E1),
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
-            }
-
-            // =========================================================================
-            // 5. PLATFORM CATEGORIES (Telegram, WhatsApp, TikTok, Instagram, Facebook...)
+            // 3. TOP PLATFORMS (Telegram, WhatsApp have highest visual priority)
             // =========================================================================
             item {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                        .padding(top = 4.dp, bottom = 4.dp)
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                            .padding(horizontal = 16.dp, vertical = 2.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -486,8 +391,8 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .horizontalScroll(rememberScrollState())
-                            .padding(horizontal = 16.dp, vertical = 6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         Platform.entries.forEach { platform ->
                             CategoryIconItem(

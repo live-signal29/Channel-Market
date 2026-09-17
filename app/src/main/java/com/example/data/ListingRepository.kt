@@ -46,8 +46,10 @@ class ListingRepository(
     }
 
     suspend fun seedInitialDataIfNeeded() = withContext(Dispatchers.IO) {
-        val initialList = InitialData.getInitialListings()
-        listingDao.insertAll(initialList)
+        if (listingDao.getCount() == 0) {
+            val initialList = InitialData.getInitialListings()
+            listingDao.insertAll(initialList)
+        }
     }
 
     // ==========================================
