@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ChannelMarket</string>
+    <string name="app_full_name">Channel Market: Buy &amp; Sell</string>
+    
+    <!-- Play Store ASO & SEO Keywords & Metadata -->
+    <string name="seo_keywords">telegram channel, telegram group, ton, sell, buy, whatsapp group, whatsapp channel, forex channel, trading channel, crypto signals, tiktok account, youtube channel, instagram page, discord server, ton ads</string>
+    <string name="app_description">Buy and sell Telegram channels, Telegram groups, TON Ads enabled communities, WhatsApp groups, Forex &amp; Crypto trading channels, YouTube monetized channels, TikTok accounts, and Instagram theme pages securely.</string>
+</resources>

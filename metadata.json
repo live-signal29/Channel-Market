@@ -1,0 +1,6 @@
+{
+  "name": "ChannelMarket",
+  "description": "Buy & Sell Telegram Channels, Telegram Groups, TON Ads active assets, WhatsApp Groups, Forex & Trading channels, TikTok, YouTube & Instagram.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
