@@ -1,5 +1,6 @@
 package com.example.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -57,6 +58,7 @@ import com.example.ui.screens.SavedScreen
 import com.example.ui.theme.DangerRed
 import com.example.ui.theme.DarkBg
 import com.example.ui.theme.DarkSurface
+import com.example.ui.theme.LightBg
 import com.example.ui.theme.LightBorder
 import com.example.ui.theme.LightSurface
 import com.example.ui.theme.LightTextMuted
@@ -84,6 +86,11 @@ fun MainScreen(
     var currentScreen by remember { mutableStateOf<Screen>(Screen.Home) }
     var showAdminDialog by remember { mutableStateOf(false) }
 
+    // System back press returns to marketplace Home if on any other screen
+    BackHandler(enabled = currentScreen !is Screen.Home) {
+        currentScreen = Screen.Home
+    }
+
     if (showAdminDialog) {
         SecretAdminDialog(
             onDismiss = { showAdminDialog = false },
@@ -101,7 +108,7 @@ fun MainScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = DarkBg,
+        containerColor = LightBg,
         bottomBar = {
             if (showBottomBar) {
                 Column(
@@ -343,7 +350,7 @@ fun MainScreen(
                         viewModel = viewModel,
                         isAdminMode = uiState.isAdminUnlocked,
                         onBack = {
-                            currentScreen = Screen.ChatList
+                            currentScreen = Screen.Home
                         }
                     )
                 }

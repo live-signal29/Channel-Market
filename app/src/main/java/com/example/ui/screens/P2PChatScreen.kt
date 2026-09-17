@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -96,6 +97,8 @@ fun P2PChatScreen(
     val messages by viewModel.getMessagesForDeal(dealChatId).collectAsStateWithLifecycle(initialValue = emptyList())
     var inputText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
+
+    BackHandler(onBack = onBack)
 
     // Default sender role: Admin if admin mode, else Buyer
     var currentRole by remember { mutableStateOf(if (isAdminMode) "ADMIN" else "BUYER") }
