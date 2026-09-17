@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,10 +23,12 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -52,6 +55,7 @@ import com.example.ui.theme.LightTextPrimary
 import com.example.ui.theme.LightTextSecondary
 import com.example.ui.theme.MarketPrimary
 import com.example.ui.theme.PriceGreen
+import com.example.ui.theme.TelegramCyan
 import com.example.ui.theme.TonGold
 import java.text.NumberFormat
 import java.util.Locale
@@ -73,8 +77,8 @@ fun ListingCard(
         modifier = modifier
             .fillMaxWidth()
             .border(
-                width = if (listing.isFeatured) 1.5.dp else 1.dp,
-                color = if (listing.isFeatured) Color(0xFFDB2777) else LightBorder,
+                width = 1.dp,
+                color = if (listing.isFeatured) Color(0xFFFCD34D) else LightBorder,
                 shape = RoundedCornerShape(16.dp)
             )
             .clip(RoundedCornerShape(16.dp))
@@ -84,192 +88,225 @@ fun ListingCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Box {
-            Column(modifier = Modifier.padding(16.dp)) {
-                // Top row: Platform icon, Title & Handle, Favorite button
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Top
-                ) {
-                    PlatformIconBadge(platform = platform, size = 46.dp)
+        Column(modifier = Modifier.padding(14.dp)) {
+            // 1. Top row: Platform icon, Title & Handle, Favorite bookmark
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                PlatformIconBadge(platform = platform, size = 42.dp)
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(10.dp))
 
-                    Column(modifier = Modifier.weight(1f)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Text(
-                                text = listing.title,
-                                fontSize = 16.sp,
-                                color = LightTextPrimary,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f, fill = false)
-                            )
-                            if (listing.isFeatured) {
-                                Box(
-                                    modifier = Modifier
-                                        .background(FeaturedPink, RoundedCornerShape(10.dp))
-                                        .padding(horizontal = 6.dp, vertical = 2.dp)
-                                ) {
-                                    Text(
-                                        text = "Featured",
-                                        fontSize = 10.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color.White
-                                    )
-                                }
-                            }
-                        }
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = listing.title,
+                            fontSize = 15.sp,
+                            color = LightTextPrimary,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
 
-                        Spacer(modifier = Modifier.height(3.dp))
+                    Spacer(modifier = Modifier.height(2.dp))
 
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
                             text = listing.handleOrLink,
                             fontSize = 12.sp,
                             color = MarketPrimary,
                             fontWeight = FontWeight.Medium,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-
-                    IconButton(
-                        onClick = onToggleFavorite,
-                        modifier = Modifier
-                            .size(36.dp)
-                            .testTag("favorite_btn_${listing.id}")
-                    ) {
-                        Icon(
-                            imageVector = if (listing.isFavorite) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
-                            contentDescription = "Bookmark",
-                            tint = if (listing.isFavorite) TonGold else LightTextMuted,
-                            modifier = Modifier.size(22.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                // Badges row: category, privacy, TON Ads, verified, premium
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    // Category chip
-                    TagChip(
-                        text = category.displayName,
-                        textColor = LightTextSecondary,
-                        bgColor = LightSurfaceVariant,
-                        borderColor = LightBorder
-                    )
-
-                    // Privacy badge
-                    PrivacyBadge(privacy = privacy)
-
-                    // Telegram specific TON Ads tag
-                    if (platform == Platform.TELEGRAM && category != ItemCategory.USER_ACCOUNT) {
-                        TonAdsBadge(status = tonAds)
-                    }
-
-                    // Verified badge
-                    if (listing.isVerified) {
-                        VerifiedBadge()
-                    }
-
-                    // Premium badge
-                    if (listing.isPremium) {
-                        PremiumBadge()
-                    }
-
-                    // Escrow guarantee
-                    EscrowGuaranteedBadge()
-
-                    if (listing.isSold) {
-                        SoldBadge()
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Bottom row: Metrics (subscribers/members) + Price & Buy Button
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.People,
-                            contentDescription = "Members",
-                            tint = LightTextMuted,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text(
-                            text = formatMembers(listing.membersCount, category),
-                            fontSize = 13.sp,
-                            color = LightTextSecondary,
-                            fontWeight = FontWeight.SemiBold
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false)
                         )
 
-                        if (listing.monthlyIncome.isNotBlank() && listing.monthlyIncome != "$0" && listing.monthlyIncome != "N/A") {
-                            Spacer(modifier = Modifier.width(8.dp))
+                        if (listing.isFeatured) {
+                            Spacer(modifier = Modifier.width(6.dp))
                             Box(
                                 modifier = Modifier
-                                    .background(Color(0x1910B981), RoundedCornerShape(4.dp))
-                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                                    .background(Color(0xFFFEF2F2), RoundedCornerShape(4.dp))
+                                    .border(1.dp, Color(0xFFFECACA), RoundedCornerShape(4.dp))
+                                    .padding(horizontal = 5.dp, vertical = 1.dp)
                             ) {
                                 Text(
-                                    text = listing.monthlyIncome,
-                                    fontSize = 11.sp,
-                                    color = PriceGreen,
-                                    fontWeight = FontWeight.SemiBold
+                                    text = "★ Featured",
+                                    fontSize = 9.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFFDC2626)
                                 )
                             }
                         }
                     }
+                }
 
-                    // Price & Buy Now button like the image
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier.padding(end = 10.dp)
-                        ) {
-                            Text(
-                                text = "$${listing.price.toInt()}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Black,
-                                color = PriceGreen
-                            )
-                            Text(
-                                text = listing.currency,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = LightTextMuted
-                            )
-                        }
-                        Button(
-                            onClick = onClick,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (listing.isSold) Color(0xFF64748B) else Color(0xFF0284C7)
-                            ),
-                            shape = RoundedCornerShape(8.dp),
-                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 14.dp, vertical = 7.dp),
-                            modifier = Modifier.height(36.dp)
-                        ) {
-                            Text(
-                                text = if (listing.isSold) "Sold" else "Buy Now",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = Color.White
-                            )
-                        }
+                IconButton(
+                    onClick = onToggleFavorite,
+                    modifier = Modifier
+                        .size(34.dp)
+                        .testTag("favorite_btn_${listing.id}")
+                ) {
+                    Icon(
+                        imageVector = if (listing.isFavorite) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                        contentDescription = "Bookmark",
+                        tint = if (listing.isFavorite) TonGold else LightTextMuted,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // 2. Badges FlowRow
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TagChip(
+                    text = category.displayName,
+                    textColor = LightTextSecondary,
+                    bgColor = LightSurfaceVariant,
+                    borderColor = LightBorder
+                )
+
+                PrivacyBadge(privacy = privacy)
+
+                if (platform == Platform.TELEGRAM && category != ItemCategory.USER_ACCOUNT) {
+                    TonAdsBadge(status = tonAds)
+                }
+
+                if (listing.isVerified) {
+                    VerifiedBadge()
+                }
+
+                if (listing.isPremium) {
+                    PremiumBadge()
+                }
+
+                EscrowGuaranteedBadge()
+
+                if (listing.isSold) {
+                    SoldBadge()
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // 3. Metrics row: Members count + Monthly Revenue
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.People,
+                        contentDescription = "Members",
+                        tint = LightTextMuted,
+                        modifier = Modifier.size(15.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = formatMembers(listing.membersCount, category),
+                        fontSize = 12.sp,
+                        color = LightTextSecondary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                if (listing.monthlyIncome.isNotBlank() && listing.monthlyIncome != "$0" && listing.monthlyIncome != "N/A") {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Row(
+                        modifier = Modifier
+                            .background(Color(0xFFECFDF5), RoundedCornerShape(4.dp))
+                            .border(1.dp, Color(0xFFA7F3D0), RoundedCornerShape(4.dp))
+                            .padding(horizontal = 6.dp, vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.TrendingUp,
+                            contentDescription = null,
+                            tint = PriceGreen,
+                            modifier = Modifier.size(11.dp)
+                        )
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Text(
+                            text = listing.monthlyIncome,
+                            fontSize = 11.sp,
+                            color = PriceGreen,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
+                }
+            }
+
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 9.dp),
+                thickness = 0.8.dp,
+                color = LightBorder.copy(alpha = 0.7f)
+            )
+
+            // 4. Dedicated Bottom Action Row: Clear Price (Left) + Buy Button (Right)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Price (Guaranteed single line, never wrapped vertically)
+                Column {
+                    Text(
+                        text = "Price",
+                        fontSize = 10.sp,
+                        color = LightTextMuted,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Row(
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        Text(
+                            text = "$${NumberFormat.getNumberInstance(Locale.US).format(listing.price.toInt())}",
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Black,
+                            color = PriceGreen,
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = listing.currency.ifBlank { "USDT" },
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = LightTextMuted,
+                            modifier = Modifier.padding(bottom = 2.dp),
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                    }
+                }
+
+                // Buy Now Action Button
+                Button(
+                    onClick = onClick,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (listing.isSold) Color(0xFF64748B) else TelegramCyan
+                    ),
+                    shape = RoundedCornerShape(10.dp),
+                    contentPadding = PaddingValues(horizontal = 18.dp, vertical = 0.dp),
+                    modifier = Modifier.height(35.dp)
+                ) {
+                    Text(
+                        text = if (listing.isSold) "Sold Out" else "Buy Now",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (listing.isSold) Color.White else Color.Black
+                    )
                 }
             }
         }

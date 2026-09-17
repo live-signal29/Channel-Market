@@ -706,7 +706,9 @@ fun AdminListingRow(
                     text = "$${listing.price.toInt()}",
                     fontWeight = FontWeight.Black,
                     fontSize = 15.sp,
-                    color = PriceGreen
+                    color = PriceGreen,
+                    maxLines = 1,
+                    softWrap = false
                 )
             }
 
