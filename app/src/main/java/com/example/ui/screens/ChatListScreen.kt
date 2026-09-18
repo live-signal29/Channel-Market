@@ -15,15 +15,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Chat
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -36,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -44,16 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.DealChatEntity
-import com.example.model.Platform
 import com.example.ui.MarketUiState
-import com.example.ui.components.PlatformIconBadge
-import com.example.ui.theme.DarkBg
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkSurface
-import com.example.ui.theme.DarkSurfaceVariant
-import com.example.ui.theme.DarkTextMuted
-import com.example.ui.theme.DarkTextPrimary
-import com.example.ui.theme.DarkTextSecondary
 import com.example.ui.theme.LightBg
 import com.example.ui.theme.LightBorder
 import com.example.ui.theme.LightSurface
@@ -62,8 +50,7 @@ import com.example.ui.theme.LightTextPrimary
 import com.example.ui.theme.LightTextSecondary
 import com.example.ui.theme.MarketPrimary
 import com.example.ui.theme.PriceGreen
-import com.example.ui.theme.TelegramCyan
-import com.example.ui.theme.TonGold
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -83,7 +70,7 @@ fun ChatListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(LightSurface)
-                    .padding(horizontal = 16.dp, vertical = 14.dp)
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -94,7 +81,7 @@ fun ChatListScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = "Chats",
-                                fontSize = 22.sp,
+                                fontSize = 20.sp,
                                 fontWeight = FontWeight.Black,
                                 color = LightTextPrimary
                             )
@@ -102,18 +89,19 @@ fun ChatListScreen(
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Box(
                                     modifier = Modifier
-                                        .background(MarketPrimary.copy(alpha = 0.15f), RoundedCornerShape(12.dp))
+                                        .background(MarketPrimary.copy(alpha = 0.12f), RoundedCornerShape(10.dp))
                                         .padding(horizontal = 8.dp, vertical = 2.dp)
                                 ) {
                                     Text(
                                         text = "${uiState.dealChats.size}",
-                                        fontSize = 12.sp,
+                                        fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = MarketPrimary
                                     )
                                 }
                             }
                         }
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "Direct messages with channel owners & sellers",
                             fontSize = 12.sp,
@@ -138,7 +126,7 @@ fun ChatListScreen(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(72.dp)
+                            .size(64.dp)
                             .background(MarketPrimary.copy(alpha = 0.12f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
@@ -146,15 +134,15 @@ fun ChatListScreen(
                             imageVector = Icons.Default.Chat,
                             contentDescription = "No Chats",
                             tint = MarketPrimary,
-                            modifier = Modifier.size(36.dp)
+                            modifier = Modifier.size(32.dp)
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     Text(
                         text = "No Chats Yet",
-                        fontSize = 18.sp,
+                        fontSize = 17.sp,
                         fontWeight = FontWeight.Bold,
                         color = LightTextPrimary
                     )
@@ -162,31 +150,31 @@ fun ChatListScreen(
                     Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
-                        text = "Select any channel you want to buy or discuss, then tap the 'Chat' button on the listing to message the owner directly.",
+                        text = "Select any asset you want to buy or discuss, then tap the 'Chat' button on the listing to message the owner directly.",
                         fontSize = 13.sp,
                         color = LightTextMuted,
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                         lineHeight = 18.sp
                     )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(18.dp))
 
                     Button(
                         onClick = onBrowseMarket,
                         colors = ButtonDefaults.buttonColors(containerColor = MarketPrimary),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.testTag("browse_market_btn")
                     ) {
                         Icon(
                             imageVector = Icons.Default.Storefront,
                             contentDescription = null,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(16.dp)
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "Browse Channels",
+                            text = "Browse Marketplace",
                             fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
+                            fontSize = 13.sp
                         )
                     }
                 }
@@ -196,8 +184,8 @@ fun ChatListScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                contentPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(
                     items = uiState.dealChats,
@@ -224,99 +212,116 @@ fun ChatItemRow(
         sdf.format(Date(deal.lastMessageTime))
     }
 
+    val formattedPrice = remember(deal.price, deal.currency) {
+        "$${NumberFormat.getNumberInstance(Locale.US).format(deal.price.toInt())} ${deal.currency.ifBlank { "USDT" }}"
+    }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .border(1.dp, LightBorder, RoundedCornerShape(14.dp)),
+            .border(1.dp, LightBorder, RoundedCornerShape(12.dp))
+            .testTag("chat_item_${deal.id}"),
         colors = CardDefaults.cardColors(containerColor = LightSurface),
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(horizontal = 12.dp, vertical = 10.dp)
         ) {
-            // Platform avatar
-            Box(
-                modifier = Modifier
-                    .size(46.dp)
-                    .background(MarketPrimary.copy(alpha = 0.12f), CircleShape),
-                contentAlignment = Alignment.Center
+            // Line 1: Listing title + Time
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.Chat,
-                    contentDescription = null,
-                    tint = MarketPrimary,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f, fill = false)
                 ) {
+                    Icon(
+                        imageVector = Icons.Default.Chat,
+                        contentDescription = null,
+                        tint = MarketPrimary,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = deal.listingTitle,
-                        fontSize = 15.sp,
+                        fontSize = 13.5.sp,
                         fontWeight = FontWeight.Bold,
                         color = LightTextPrimary,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f, fill = false)
-                    )
-
-                    Spacer(modifier = Modifier.width(6.dp))
-
-                    Text(
-                        text = timeFormatted,
-                        fontSize = 11.sp,
-                        color = LightTextMuted
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(2.dp))
-
-                // Owner Name & Price
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Owner: ${deal.sellerName}",
-                        fontSize = 12.sp,
-                        color = MarketPrimary,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-
-                    Text(
-                        text = "${deal.price} ${deal.currency}",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Black,
-                        color = PriceGreen
-                    )
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
-                // Last Message Snippet
                 Text(
-                    text = deal.lastMessage,
-                    fontSize = 12.sp,
-                    color = LightTextSecondary,
+                    text = timeFormatted,
+                    fontSize = 11.sp,
+                    color = LightTextMuted,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    softWrap = false
                 )
             }
+
+            Spacer(modifier = Modifier.height(3.dp))
+
+            // Line 2: Owner & Price (Price is strictly single-line, bold, non-wrapping)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Owner: ${deal.sellerName}",
+                    fontSize = 12.sp,
+                    color = LightTextSecondary,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.wrapContentWidth()
+                ) {
+                    Text(
+                        text = "Price: ",
+                        fontSize = 11.5.sp,
+                        color = LightTextMuted,
+                        fontWeight = FontWeight.Normal,
+                        maxLines = 1,
+                        softWrap = false
+                    )
+                    Text(
+                        text = formattedPrice,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = PriceGreen,
+                        maxLines = 1,
+                        softWrap = false
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(3.dp))
+
+            // Line 3: Latest Message Snippet
+            Text(
+                text = deal.lastMessage,
+                fontSize = 11.5.sp,
+                color = LightTextMuted,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

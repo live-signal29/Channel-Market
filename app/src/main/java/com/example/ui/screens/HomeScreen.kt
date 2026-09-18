@@ -135,11 +135,11 @@ fun HomeScreen(
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Sell",
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(18.dp)
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "+ Sell",
+                        text = "Sell",
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )

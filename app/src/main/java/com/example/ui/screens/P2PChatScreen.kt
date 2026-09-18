@@ -58,6 +58,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import java.text.NumberFormat
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -387,11 +388,18 @@ fun P2PChatScreen(
                             color = LightTextPrimary
                         )
 
+                        val formattedAgreedPrice = remember(dealChat?.price, dealChat?.currency) {
+                            val priceVal = dealChat?.price ?: 0.0
+                            "$${NumberFormat.getNumberInstance(Locale.US).format(priceVal.toInt())} ${dealChat?.currency?.ifBlank { "USDT" } ?: "USDT"}"
+                        }
+
                         Text(
-                            text = "Agreed Price: ${dealChat?.price ?: 0.0} ${dealChat?.currency ?: "USDT"}",
+                            text = "Agreed Price: $formattedAgreedPrice",
                             fontSize = 13.sp,
                             fontWeight = FontWeight.ExtraBold,
-                            color = PriceGreen
+                            color = PriceGreen,
+                            maxLines = 1,
+                            softWrap = false
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))

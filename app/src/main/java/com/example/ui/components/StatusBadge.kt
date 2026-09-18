@@ -25,16 +25,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.model.ItemCategory
+import com.example.model.Platform
 import com.example.model.PrivacyType
 import com.example.model.TonAdsStatus
-import com.example.ui.theme.DangerRed
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkTextMuted
-import com.example.ui.theme.PremiumPurple
-import com.example.ui.theme.TelegramCyan
-import com.example.ui.theme.TonGold
-import com.example.ui.theme.VerifiedBadgeBlue
-import com.example.ui.theme.WhatsAppGreen
 
 @Composable
 fun TagChip(
@@ -49,7 +43,7 @@ fun TagChip(
         modifier = modifier
             .background(bgColor, RoundedCornerShape(6.dp))
             .border(1.dp, borderColor, RoundedCornerShape(6.dp))
-            .padding(horizontal = 7.dp, vertical = 3.dp),
+            .padding(horizontal = 7.dp, vertical = 2.5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (icon != null) {
@@ -57,17 +51,57 @@ fun TagChip(
                 imageVector = icon,
                 contentDescription = null,
                 tint = textColor,
-                modifier = Modifier.size(12.dp)
+                modifier = Modifier.size(11.dp)
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(3.dp))
         }
         Text(
             text = text,
             color = textColor,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.SemiBold
+            fontSize = 10.5.sp,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            softWrap = false
         )
     }
+}
+
+@Composable
+fun AssetTypeBadge(
+    category: ItemCategory,
+    platform: Platform,
+    modifier: Modifier = Modifier
+) {
+    val text = when (platform) {
+        Platform.TELEGRAM -> when (category) {
+            ItemCategory.CHANNEL -> "CHANNEL"
+            ItemCategory.GROUP -> "GROUP"
+            ItemCategory.BOT -> "BOT"
+            ItemCategory.USER_ACCOUNT -> "USER ACCOUNT"
+            else -> category.displayName.uppercase()
+        }
+        Platform.WHATSAPP -> when (category) {
+            ItemCategory.CHANNEL -> "WHATSAPP CHANNEL"
+            ItemCategory.GROUP -> "WHATSAPP GROUP"
+            ItemCategory.USER_ACCOUNT -> "WHATSAPP ACCOUNT"
+            else -> category.displayName.uppercase()
+        }
+        Platform.TIKTOK -> "TIKTOK ACCOUNT"
+        Platform.INSTAGRAM -> if (category == ItemCategory.PAGE) "INSTAGRAM PAGE" else "INSTAGRAM ACCOUNT"
+        Platform.FACEBOOK -> if (category == ItemCategory.GROUP) "FACEBOOK GROUP" else "FACEBOOK PAGE"
+        Platform.YOUTUBE -> "YOUTUBE CHANNEL"
+        Platform.X_TWITTER -> "X ACCOUNT"
+        Platform.DISCORD -> if (category == ItemCategory.BOT) "DISCORD BOT" else "DISCORD SERVER"
+        Platform.OTHER -> "${platform.displayName.uppercase()} ${category.displayName.uppercase()}"
+    }
+
+    TagChip(
+        text = text,
+        textColor = Color(0xFF1E293B),
+        bgColor = Color(0xFFF1F5F9),
+        borderColor = Color(0xFFCBD5E1),
+        modifier = modifier
+    )
 }
 
 @Composable
@@ -75,9 +109,9 @@ fun TonAdsBadge(status: TonAdsStatus, modifier: Modifier = Modifier) {
     when (status) {
         TonAdsStatus.ACTIVE -> {
             TagChip(
-                text = "TON Ads Active",
+                text = "TON ADS ACTIVE",
                 icon = Icons.Default.Campaign,
-                textColor = Color(0xFFB45309), // Dark Amber for crisp contrast
+                textColor = Color(0xFFB45309), // Dark Amber
                 bgColor = Color(0xFFFEF3C7),
                 borderColor = Color(0xFFFCD34D),
                 modifier = modifier
@@ -85,7 +119,7 @@ fun TonAdsBadge(status: TonAdsStatus, modifier: Modifier = Modifier) {
         }
         TonAdsStatus.NOT_ACTIVE -> {
             TagChip(
-                text = "TON Ads Off",
+                text = "TON ADS NOT ACTIVE",
                 icon = Icons.Default.Campaign,
                 textColor = Color(0xFF475569),
                 bgColor = Color(0xFFF1F5F9),
@@ -101,7 +135,7 @@ fun TonAdsBadge(status: TonAdsStatus, modifier: Modifier = Modifier) {
 fun PrivacyBadge(privacy: PrivacyType, modifier: Modifier = Modifier) {
     if (privacy == PrivacyType.PUBLIC) {
         TagChip(
-            text = "Public",
+            text = "PUBLIC",
             icon = Icons.Default.Public,
             textColor = Color(0xFF0369A1), // Deep sky blue
             bgColor = Color(0xFFE0F2FE),
@@ -110,7 +144,7 @@ fun PrivacyBadge(privacy: PrivacyType, modifier: Modifier = Modifier) {
         )
     } else {
         TagChip(
-            text = "Private",
+            text = "PRIVATE",
             icon = Icons.Default.Lock,
             textColor = Color(0xFF6B21A8), // Deep purple
             bgColor = Color(0xFFF3E8FF),
@@ -121,21 +155,36 @@ fun PrivacyBadge(privacy: PrivacyType, modifier: Modifier = Modifier) {
 }
 
 @Composable
+fun VerificationBadge(isVerified: Boolean, modifier: Modifier = Modifier) {
+    if (isVerified) {
+        TagChip(
+            text = "VERIFIED",
+            icon = Icons.Default.CheckCircle,
+            textColor = Color(0xFF1D4ED8), // Deep royal blue
+            bgColor = Color(0xFFEFF6FF),
+            borderColor = Color(0xFFBFDBFE),
+            modifier = modifier
+        )
+    } else {
+        TagChip(
+            text = "NOT VERIFIED",
+            textColor = Color(0xFF64748B),
+            bgColor = Color(0xFFF8FAFC),
+            borderColor = Color(0xFFE2E8F0),
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
 fun VerifiedBadge(modifier: Modifier = Modifier) {
-    TagChip(
-        text = "Verified",
-        icon = Icons.Default.CheckCircle,
-        textColor = Color(0xFF1D4ED8), // Deep royal blue
-        bgColor = Color(0xFFEFF6FF),
-        borderColor = Color(0xFFBFDBFE),
-        modifier = modifier
-    )
+    VerificationBadge(isVerified = true, modifier = modifier)
 }
 
 @Composable
 fun PremiumBadge(modifier: Modifier = Modifier) {
     TagChip(
-        text = "Premium",
+        text = "PREMIUM",
         icon = Icons.Default.Star,
         textColor = Color(0xFF7C3AED), // Deep violet
         bgColor = Color(0xFFF5F3FF),
@@ -145,9 +194,24 @@ fun PremiumBadge(modifier: Modifier = Modifier) {
 }
 
 @Composable
+fun PremiumStatusBadge(isPremium: Boolean, modifier: Modifier = Modifier) {
+    if (isPremium) {
+        PremiumBadge(modifier = modifier)
+    } else {
+        TagChip(
+            text = "NON-PREMIUM",
+            textColor = Color(0xFF64748B),
+            bgColor = Color(0xFFF8FAFC),
+            borderColor = Color(0xFFE2E8F0),
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
 fun EscrowGuaranteedBadge(modifier: Modifier = Modifier) {
     TagChip(
-        text = "Escrow Safe",
+        text = "ESCROW SAFE",
         icon = Icons.Default.Security,
         textColor = Color(0xFF15803D), // Deep green
         bgColor = Color(0xFFDCFCE7),
@@ -159,7 +223,7 @@ fun EscrowGuaranteedBadge(modifier: Modifier = Modifier) {
 @Composable
 fun FeaturedBadge(modifier: Modifier = Modifier) {
     TagChip(
-        text = "Featured",
+        text = "FEATURED",
         icon = Icons.Default.Star,
         textColor = Color(0xFF9D174D), // Deep Rose/Pink
         bgColor = Color(0xFFFCE7F3),
@@ -178,4 +242,5 @@ fun SoldBadge(modifier: Modifier = Modifier) {
         modifier = modifier
     )
 }
+
 
